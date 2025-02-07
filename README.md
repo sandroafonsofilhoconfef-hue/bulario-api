@@ -9,6 +9,8 @@ Para versão comercial, entre em contato comigo através das minhas redes.
 ___Esta API não foi feita para fins comerciais, pois pode conter bugs e indisponibilidades devido o servidor ser grátis e de uso limitado!___
 
 ---
+- Confira o GPT Personalizado com as bulas de medicamentos: https://chatgpt.com/g/g-67a3df72c8908191a820943bc1950593-bula
+---
 
 - Biblioteca utilizada: https://github.com/iuryLandin/bulario
 
