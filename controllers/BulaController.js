@@ -1,72 +1,75 @@
-const bulario = require('bulario');
+const fetch = require('node-fetch');
 const { AppError } = require('../helpers/AppError');
+
+const API_BASE = 'https://bula.vercel.app/api';
 
 const buscar = async (nome, pagina = 1) => {
     try {
-        const result = await bulario.pesquisar(nome, pagina)
-        return result;
+        const url = `${API_BASE}/busca?nome=${encodeURIComponent(nome)}&pagina=${pagina}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new AppError(`Erro HTTP ${res.status}`, res.status);
+        return await res.json();
     } catch (error) {
-        throw new AppError(error)
+        throw new AppError(error.message || error, 400);
     }
 };
 
 const buscarV2 = async (nome, pagina = 1, count = 4) => {
     try {
-        const result = await bulario.buscaFull(nome, pagina, count)
-        return result;
+        const url = `${API_BASE}/busca?nome=${encodeURIComponent(nome)}&pagina=${pagina}&count=${count}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new AppError(`Erro HTTP ${res.status}`, res.status);
+        return await res.json();
     } catch (error) {
-        throw new AppError(error)
-    }
-};
-
-const filtrar = async (filtro, pagina = 1) => {
-    try {
-        const result = await bulario.filtrar(filtro, pagina)
-        return result;
-    } catch (error) {
-        throw new AppError(error)
+        throw new AppError(error.message || error, 400);
     }
 };
 
 const getByNum = async (numProcesso) => {
     try {
-        const result = await bulario.getMedicamento(numProcesso)
-        return result;
+        const url = `${API_BASE}/medicamento/${numProcesso}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new AppError(`Erro HTTP ${res.status}`, res.status);
+        return await res.json();
     } catch (error) {
-        throw new AppError(error)
+        throw new AppError(error.message || error, 400);
     }
 };
 
 const listaCategorias = async () => {
     try {
-        const result = await bulario.getCategoria()
-        return result;
+        const res = await fetch(`${API_BASE}/categorias`);
+        if (!res.ok) throw new AppError(`Erro HTTP ${res.status}`, res.status);
+        return await res.json();
     } catch (error) {
-        throw new AppError(error)
+        throw new AppError(error.message || error, 400);
     }
 };
 
-const getByCat = async (idCategoria, pagina = 1) => {
+const getByCat = async (categoria, pagina = 1) => {
     try {
-        const result = await bulario.getMedicamentosPorCategoria(idCategoria, pagina)
-        return result;
+        const url = `${API_BASE}/categoria/${categoria}?pagina=${pagina}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new AppError(`Erro HTTP ${res.status}`, res.status);
+        return await res.json();
     } catch (error) {
-        throw new AppError(error)
+        throw new AppError(error.message || error, 400);
     }
 };
 
-const getLink = async (idBula) => {
-    return `https://consultas.anvisa.gov.br/api/consulta/medicamentos/arquivo/bula/parecer/${idBula}/?Authorization=`
+const getLink = async (id) => {
+    return `${API_BASE}/bula/${id}`;
 };
-
 
 const getPdf = async (id) => {
     try {
-        const result = await bulario.getPdf(id)
-        return result;
+        const url = `${API_BASE}/bula/${id}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new AppError(`Erro HTTP ${res.status}`, res.status);
+        return await res.arrayBuffer();
     } catch (error) {
-        throw new AppError(error)
+        throw new AppError(error.message || error, 400);
     }
 };
 
-module.exports = { buscar, buscarV2, filtrar, getByNum, listaCategorias, getByCat, getLink, getPdf };
+module.exports = { buscar, buscarV2, getByNum, listaCategorias, getByCat, getLink, getPdf };
