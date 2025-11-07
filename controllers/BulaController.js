@@ -1,18 +1,21 @@
-const fetch = require('node-fetch');
 const { AppError } = require('../helpers/AppError');
 
-const API_BASE = 'https://bula.vercel.app/api';
+const API_BASE = 'https://bulario-api.vercel.app/api';
+
+let fetch;
+if (typeof globalThis.fetch === 'undefined') {
+  fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
+} else {
+  fetch = globalThis.fetch;
+}
 
 const buscar = async (nome, pagina = 1) => {
-    try {
-        const url = `${API_BASE}/busca?nome=${encodeURIComponent(nome)}&pagina=${pagina}`;
-        const res = await fetch(url);
-        if (!res.ok) throw new AppError(`Erro HTTP ${res.status}`, res.status);
-        return await res.json();
-    } catch (error) {
-        throw new AppError(error.message || error, 400);
-    }
+  const url = `${API_BASE}/consulta?nome=${encodeURIComponent(nome)}&pagina=${pagina}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new AppError(`Erro HTTP ${res.status}`, res.status);
+  return await res.json();
 };
+
 
 const buscarV2 = async (nome, pagina = 1, count = 4) => {
     try {
